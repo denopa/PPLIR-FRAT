@@ -40,11 +40,11 @@ struct ContentView: View {
                 }
             Form {
                 Section() {
-                    HStack {
-                        Text("Pilot").font(.largeTitle)
-                        Spacer()
-                        Text("\(pilotPoints, specifier: "%.00f") points")
-                    }
+                        HStack(alignment: .lastTextBaseline) {
+                            Text("Pilot").font(.largeTitle)
+                            Spacer()
+                            Text("\(pilotPoints, specifier: "%.00f") points").foregroundColor(.gray)
+                        }
                 }
                 Section(header: Text("Experience")) {
                     //TextField("Hours in type", text: $hoursInType)
@@ -79,7 +79,7 @@ struct ContentView: View {
                             .cornerRadius(4)
                     )
                     Toggle(isOn: $IRRatedCopilot) {
-                        Text("Instructor or IR pilot in copilot's seat? ")
+                        Text("Instructor or IR pilot in P2 seat? ")
                     }
                 }
                 Section(header: Text("Licenses, Current and Proficient Ratings")) {
