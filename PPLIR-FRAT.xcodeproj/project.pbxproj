@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -15,6 +15,7 @@
 		59619E5D25E2E69300F0968B /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59619E3225E2E69200F0968B /* ContentView.swift */; };
 		59619E5E25E2E69300F0968B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 59619E3325E2E69200F0968B /* Assets.xcassets */; };
 		59619E5F25E2E69300F0968B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 59619E3325E2E69200F0968B /* Assets.xcassets */; };
+		59BB36B425E3D283000C9B02 /* Sliders in Frameworks */ = {isa = PBXBuildFile; productRef = 59BB36B325E3D283000C9B02 /* Sliders */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -56,6 +57,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				59BB36B425E3D283000C9B02 /* Sliders in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -167,6 +169,9 @@
 			dependencies = (
 			);
 			name = "PPLIR-FRAT (iOS)";
+			packageProductDependencies = (
+				59BB36B325E3D283000C9B02 /* Sliders */,
+			);
 			productName = "PPLIR-FRAT (iOS)";
 			productReference = 59619E3825E2E69200F0968B /* PPLIR-FRAT.app */;
 			productType = "com.apple.product-type.application";
@@ -258,6 +263,9 @@
 				Base,
 			);
 			mainGroup = 59619E2B25E2E69100F0968B;
+			packageReferences = (
+				59BB36B225E3D283000C9B02 /* XCRemoteSwiftPackageReference "SwiftUIsliders" */,
+			);
 			productRefGroup = 59619E3925E2E69200F0968B /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -696,6 +704,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		59BB36B225E3D283000C9B02 /* XCRemoteSwiftPackageReference "SwiftUIsliders" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/denopa/SwiftUIsliders.git";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		59BB36B325E3D283000C9B02 /* Sliders */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 59BB36B225E3D283000C9B02 /* XCRemoteSwiftPackageReference "SwiftUIsliders" */;
+			productName = Sliders;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 59619E2C25E2E69100F0968B /* Project object */;
 }
