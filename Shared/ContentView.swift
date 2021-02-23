@@ -25,7 +25,7 @@ struct ContentView: View {
     
     var pilotPoints: Double {
         let inType = max(0,(5-hoursInType/100)).rounded(.up)
-        let recent = max(0,(6-recentHoursInType/30)).rounded(.up)
+        let recent = max(0,(6-recentHoursInType/5)).rounded(.up)
         let training = min(6,(monthsSinceTraining/1.5)).rounded(.up) - 1
         let copilot : Double = IRRatedCopilot ? -5 : 0
         return inType + recent + training + copilot + licensePoints[license] + (licenses[license]=="ATPL" ? 0 : ratingPoints[rating])
@@ -292,7 +292,7 @@ struct ContentView: View {
         }
         points = points + (wind ? 3:0)
         points = points + ((crosswind==1) ? 1:0) + ((crosswind==2) ? 15:0)
-        points = points + (winter ? 6:0) + (density ? 2:0) + (MTOW ? 2:0) + ((MTOW && ME) ? 1:0) + (uncontrolled ? 2:0)
+        points = points + (runwayLength ? 3:0) + (winter ? 6:0) + (density ? 2:0) + (MTOW ? 2:0) + ((MTOW && ME) ? 1:0) + (uncontrolled ? 2:0)
         if airportTerrain {
             points = points + 2
             if night {
@@ -413,11 +413,27 @@ struct ContentView: View {
     }
     
 //    main view
+    var totalPoints: Double {
+//        return pilotPoints + airplanePoints + envPoints + PressurePoints
+        return pilotPoints + airplanePoints + envPoints
+    }
+    
+    var totalColor: Color {
+        if totalPoints < 15 {
+            return Color.green
+        }
+        else if totalPoints < 25 {
+            return Color.orange
+        }
+        else {
+            return Color.red
+        }
+    }
     
     var body: some View {
         
         TabView {
-            Text("\(pilotPoints, specifier: "%.00f")").foregroundColor(pilotColor).font(.largeTitle)
+            Text("\(totalPoints, specifier: "%.00f")").foregroundColor(pilotColor).font(.largeTitle)
                 .padding()
                 .tabItem {
                             Image(systemName: "house")
