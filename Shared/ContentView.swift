@@ -130,7 +130,10 @@ struct ContentView: View {
         var points : Double = 0
         points = points + (ME ? -2:0) + (turbine ? -2:0) + (inop ? 3:0) + (avionics ? 3:0)
         if (enrouteWeather>1) || (airportWeather>1) {
-            points = points + (ap ? 7:0) + (maintenance ? 5:0)
+            points = points + (!ap ? 7:0) + (maintenance ? 5:0) + (!GNSS ? 4:0)
+            
+        } else {
+            points = points +  (!GNSS ? 2:0)
         }
         if maintenance {
             points = points + 5
@@ -237,8 +240,8 @@ struct ContentView: View {
     @AppStorage("approach") var approach : Int = 0
     let approachTypes = ["No IAP","Circling","2D","3D"]
     @AppStorage("wind") var wind : Bool = false
-    @AppStorage("crosswind") var crosswind : Bool = false
-    let margins = ["OK", "No Margins", "NO GO"]
+    @AppStorage("crosswind") var crosswind : Int = 0
+    let crosswindTypes = ["Light Xwind", "Marginal Xwind", "Strong Xwind"]
     @AppStorage("winter") var winter : Bool = false
     @AppStorage("airportTerrain") var airportTerrain : Bool = false
     @AppStorage("runwayLength") var runwayLength : Bool = false
@@ -247,7 +250,58 @@ struct ContentView: View {
     @AppStorage("uncontrolled") var uncontrolled : Bool = false
     
     var envPoints: Double {
-        return 0
+        var points : Double = 0
+        //        enroute
+        if enrouteWeather > 1 {
+            points = 6 - (dlWeather ? 1:0) - (radar ? 1:0) - (alternator ? 1:0) - (AI ? 1:0) - (vaccum ? 1:0)
+            points = points + ((rating<1) ? 100:0) //no go if no IR rating
+        }
+        if night {
+            points = points + 5 - ((ME||turbine) ? 2:0) - ((!(ME||turbine)&&(alternator&&vaccum)) ? 1:0)
+        }
+        if terrain && !(ME||turbine) {
+            points = points + 3
+        }
+        if icing == 3 {
+            points = points + 100
+        } else if icing == 2 {
+            points = points + (FIKI ? 5:15)
+        } else if icing == 1 {
+            points = points + (FIKI ? 0:3)
+        }
+        if storms {
+            points = points + 15 + (dlWeather ? -4:0) + (radar ? -4:0)
+        } else if turbulence {
+            points = points + 7
+        } else if embeddedCB {
+            points = points + 7
+        }
+        if embeddedCB && (enrouteWeather > 1) && !dlWeather && !radar {
+            points = points + 100
+        }
+        points = points + (alternateBrief ? 0:3) + (alternateWeather ? 5:0)
+        //        airport
+        points = points + (((airportWeather>1) && (rating<1)) ? 100:0)//no go if no IR rating
+        points = points + (((airportWeather==1) && (rating<1)) ? 3:0) + ((airportWeather==3) ? 3:0)
+        if airportWeather == 1 {
+            points = points + ((approach==0) ? 3:0) + ((approach==1) ? 2:0)
+        } else if airportWeather == 2 {
+            points = points + ((approach==0) ? 100:0) + ((approach==1) ? 5:0) + ((approach==2) ? 2:0)
+        } else if airportWeather == 3 {
+            points = points + ((approach==0) ? 100:0) + ((approach==1) ? 15:0) + ((approach==2) ? 5:0) + ((approach==3) ? 2:0)
+        }
+        points = points + (wind ? 3:0)
+        points = points + ((crosswind==1) ? 1:0) + ((crosswind==2) ? 15:0)
+        points = points + (winter ? 6:0) + (density ? 2:0) + (MTOW ? 2:0) + ((MTOW && ME) ? 1:0) + (uncontrolled ? 2:0)
+        if airportTerrain {
+            points = points + 2
+            if night {
+                points = points + 2
+            } else if ((airportWeather>0) && (approach<2)) {
+                points = points + 2
+            }
+        }
+        return points
     }
     
     var envColor: Color {
@@ -326,9 +380,11 @@ struct ContentView: View {
                 Toggle(isOn: $wind) {
                     Text("Surface winds > 1/3 Approach Speed ?")
                 }
-                Toggle(isOn: $crosswind) {
-                    Text("Crosswind close to limit?")
-                }
+                Picker("Crosswind", selection: $crosswind) {
+                    ForEach(0..<crosswindTypes.count) {
+                        Text(self.crosswindTypes[$0])
+                    }
+                }.pickerStyle(SegmentedPickerStyle())
                 Toggle(isOn: $winter) {
                     Text("Winter Ops Snow, Ice, Contaminated runway?")
                 }
