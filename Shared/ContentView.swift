@@ -4,20 +4,21 @@
 //
 //  Created by October on 21/02/2021.
 //
-
+import Foundation
 import SwiftUI
 import Sliders
 
+
 struct ContentView: View {
-    
-    @State private var hoursInType: Double = 0
-    @State private var recentHoursInType: Double = 0
-    @State private var monthsSinceTraining: Double = 12
-    @State private var IRRatedCopilot: Bool = false
-    @State private var license = 0
+
+    @AppStorage("hoursInType") var hoursInType: Double = 0
+    @AppStorage("recentHoursInType") var recentHoursInType: Double = 0
+    @AppStorage("monthsSinceTraining") var monthsSinceTraining: Double = 12
+    @AppStorage("IRRatedCopilot") var IRRatedCopilot: Bool = false
+    @AppStorage("license") var license = 0
     let licenses = ["PPL","Instructor","CPL","ATPL"]
     let licensePoints : [Double] = [0,-1,-1,-4]
-    @State private var rating = 0
+    @AppStorage("rating") var rating = 0
     let ratings = ["No IR", "IMCr", "IR"]
     let ratingPoints : [Double] = [0, -1, -2]
     
@@ -29,10 +30,22 @@ struct ContentView: View {
         return inType + recent + training + copilot + licensePoints[license] + (licenses[license]=="ATPL" ? 0 : ratingPoints[rating])
     }
     
+    var pilotColor: Color {
+        if pilotPoints < 15 {
+            return Color.green
+        }
+        else if pilotPoints < 25 {
+            return Color.orange
+        }
+        else {
+            return Color.red
+        }
+    }
+    
     var body: some View {
         
         TabView {
-            Text("Hello, world!")
+            Text("\(pilotPoints, specifier: "%.00f")").foregroundColor(pilotColor).font(.largeTitle)
                 .padding()
                 .tabItem {
                             Image(systemName: "house")
@@ -43,7 +56,7 @@ struct ContentView: View {
                         HStack(alignment: .lastTextBaseline) {
                             Text("Pilot").font(.largeTitle)
                             Spacer()
-                            Text("\(pilotPoints, specifier: "%.00f") points").foregroundColor(.gray)
+                            Text("\(pilotPoints, specifier: "%.00f") points").foregroundColor(pilotColor)
                         }
                 }
                 Section(header: Text("Experience")) {
@@ -99,7 +112,7 @@ struct ContentView: View {
             }
             .padding()
             .tabItem {
-                        Image(systemName: "person")
+                Image(systemName: "person")
                 Text("Pilot: \(pilotPoints, specifier: "%.00f")")
             }
             Text("Airplane")
