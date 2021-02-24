@@ -255,7 +255,7 @@ struct ContentView: View {
     @AppStorage("night") var night : Bool = false
     @AppStorage("terrain") var terrain : Bool = false
     @AppStorage("icing") var icing : Int = 0
-    let icings : [String] = ["No Icing","Light", "Moderate","Severe"]
+    let icings : [String] = ["None","Light", "Moderate","Severe"]
     @AppStorage("icingMSA") var icingMSA = false
     @AppStorage("storms") var storms : Bool = false
     @AppStorage("embeddedCB") var embeddedCB : Bool = false
@@ -388,6 +388,8 @@ struct ContentView: View {
                 Toggle(isOn: $turbulence) {
                     Text("Turbulence SIGMET? ")
                 }
+            }
+            Section(header: Text("Icing forecast")) {
                 Picker(selection: $icing.animation(), label:Text("Icing")) {
                     ForEach(0..<icings.count) {
                         Text(self.icings[$0])
@@ -403,6 +405,13 @@ struct ContentView: View {
                         }
                     } else {
                         Text("NO GO : non-deiced aircraft in icing").foregroundColor(.red)
+                    }
+                }
+                if icing == 1 {
+                    if !FIKI {
+                        Toggle(isOn: $icingMSA) {
+                            Text("Freezing below MSA? ").foregroundColor(icingMSA ? .red:.none)
+                        }
                     }
                 }
             }
