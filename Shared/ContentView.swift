@@ -254,7 +254,7 @@ struct ContentView: View {
     let weather : [String] = ["VMC","MVMC","IMC", "LIMC"]
     @AppStorage("night") var night : Bool = false
     @AppStorage("terrain") var terrain : Bool = false
-    @AppStorage("icing") var icing : Int = 0
+    @AppStorage("icing") var icing : Double = 0
     let icings : [String] = ["None","Light", "Moderate","Severe"]
     @AppStorage("icingMSA") var icingMSA = false
     @AppStorage("storms") var storms : Bool = false
@@ -267,8 +267,8 @@ struct ContentView: View {
     @AppStorage("approach") var approach : Int = 0
     let approachTypes = ["No IAP","Circling","2D","3D"]
     @AppStorage("wind") var wind : Bool = false
-    @AppStorage("crosswind") var crosswind : Int = 0
-    let crosswindTypes = ["Light Xwind", "Marginal Xwind", "Strong Xwind"]
+    @AppStorage("crosswind") var crosswind : Double = 0
+    let crosswindTypes = ["light", "marginal", "strong"]
     @AppStorage("winter") var winter : Bool = false
     @AppStorage("airportTerrain") var airportTerrain : Bool = false
     @AppStorage("runwayLength") var runwayLength : Bool = false
@@ -389,12 +389,12 @@ struct ContentView: View {
                     Text("Turbulence SIGMET? ")
                 }
             }
-            Section(header: Text("Icing forecast")) {
-                Picker(selection: $icing.animation(), label:Text("Icing")) {
-                    ForEach(0..<icings.count) {
-                        Text(self.icings[$0])
-                    }
-                }.pickerStyle(SegmentedPickerStyle())
+            Section(header: Text("Icing forecast: \(icings[Int(icing)])")) {
+                HSlider(value: $icing, in: 0...3, step: 1, track:
+                            LinearGradient(gradient: Gradient(colors: [.green, .orange, .red]), startPoint: .leading, endPoint: .trailing)
+                            .frame(height: 3)
+                            .cornerRadius(4)
+                )
                 if icing>2 {
                     Text("NO GO : severe icing").foregroundColor(.red)
                 }
@@ -446,11 +446,17 @@ struct ContentView: View {
                 Toggle(isOn: $wind) {
                     Text("Surface winds > 1/3 Approach Speed ?")
                 }
-                Picker("Crosswind", selection: $crosswind) {
-                    ForEach(0..<crosswindTypes.count) {
-                        Text(self.crosswindTypes[$0])
-                    }
-                }.pickerStyle(SegmentedPickerStyle())
+//                Picker("Crosswind", selection: $crosswind) {
+//                    ForEach(0..<crosswindTypes.count) {
+//                        Text(self.crosswindTypes[$0])
+//                    }
+//                }.pickerStyle(SegmentedPickerStyle())
+                Text("Crosswind: \(crosswindTypes[Int(crosswind)])")
+                HSlider(value: $crosswind, in: 0...2, step: 1, track:
+                            LinearGradient(gradient: Gradient(colors: [.green, .orange, .red]), startPoint: .leading, endPoint: .trailing)
+                            .frame(height: 3)
+                            .cornerRadius(4)
+                )
                 Toggle(isOn: $winter) {
                     Text("Winter Ops Snow, Ice, Contaminated runway?")
                 }
