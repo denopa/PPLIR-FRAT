@@ -2,7 +2,7 @@
 //  ContentView.swift
 //  Shared
 //
-//  Created by October on 21/02/2021.
+//  Created by Patrick de Nonneville on 21/02/2021.
 //
 import Foundation
 import SwiftUI
@@ -279,7 +279,8 @@ struct ContentView: View {
         if embeddedCB && (enrouteWeather > 1) && !dlWeather && !radar {
             points = points + 100
         }
-        points = points + (alternateBrief ? 0:3) + (alternateWeather ? 5:0)
+        //      alternate and fuel
+        points = points + (alternateBrief ? 0:3) + (alternateWeather ? 5:0) + (fuelReserve ? 3:0)
         //        airport
         points = points + (((airportWeather>1) && (rating<1)) ? 100:0)//no go if no IR rating
         points = points + (((airportWeather==1) && (rating<1)) ? 3:0) + ((airportWeather==3) ? 3:0)
@@ -366,7 +367,7 @@ struct ContentView: View {
                     Text("Less than 30 minutes reserve on top of legal fuel? ")
                 }
             }
-            Section(header: Text("Airport - worst of Departure, Arrival, Alternate")) {
+            Section(header: Text("Airport Forecast - worst of Departure, Arrival, Alternate")) {
                 Picker("Weather Conditions", selection: $airportWeather) {
                     ForEach(0..<weather.count) {
                         Text(self.weather[$0])
@@ -388,6 +389,8 @@ struct ContentView: View {
                 Toggle(isOn: $winter) {
                     Text("Winter Ops Snow, Ice, Contaminated runway?")
                 }
+            }
+            Section(header: Text("Airport Conditions - worst of Departure, Arrival, Alternate")) {
                 Toggle(isOn: $airportTerrain) {
                     Text("High Terrain?")
                 }
@@ -412,10 +415,92 @@ struct ContentView: View {
         }
     }
     
+//    Pressure
+    @AppStorage("passengers") var passengers : Int = 0
+    let passengersType = ["None", "Inexperienced", "Experienced"]
+    @AppStorage("IMSAFE") var IMSAFE : Int = 0
+    let fitForFlight = ["Yes", "Marginal", "No"]
+    @AppStorage("pressureToComplete") var pressureToComplete : Int = 1
+    let pressureType = ["None", "Low", "High", "Very High"]
+    
+    var pressurePoints: Double {
+        var points : Double = 0
+        if passengers == 1 {
+            points = points + 5
+        } else if passengers == 2 {
+            points = points + 3
+        }
+        if IMSAFE == 1 {
+            points = points + 5
+        } else if IMSAFE == 2 {
+            points = points + 100
+        }
+        if pressureToComplete == 0 {
+            points = points - 1
+        } else if pressureToComplete == 2 {
+            points = points + 5
+        } else if pressureToComplete == 3 {
+            points = points + 100
+        }
+        return points
+    }
+    
+    var pressureColor: Color {
+        if pressurePoints < 15 {
+            return Color.green
+        }
+        else if pressurePoints < 25 {
+            return Color.orange
+        }
+        else {
+            return Color.red
+        }
+    }
+    
+    
+    fileprivate func pressureTab() -> some View {
+        return Form {
+            Section() {
+                HStack(alignment: .lastTextBaseline) {
+                    Text("Pressure").font(.largeTitle)
+                    Spacer()
+                    Text("\(pressurePoints, specifier: "%.00f") points").foregroundColor(pressureColor)
+                }
+            }
+            Section(header: Text("Passengers")) {
+                Picker("Passengers", selection: $passengers) {
+                    ForEach(passengersType.indices) {
+                        Text(passengersType[$0])
+                    }
+                }.pickerStyle(SegmentedPickerStyle())
+            }
+            Section(header: Text("IMSAFE")) {
+                Picker("IMSAFE", selection: $IMSAFE) {
+                    ForEach(fitForFlight.indices) {
+                        Text(fitForFlight[$0])
+                    }
+                }.pickerStyle(SegmentedPickerStyle())
+            }
+            Section(header: Text("Pressure to complete flight")) {
+                Picker("pressureToComplete", selection: $pressureToComplete) {
+                    ForEach(pressureType.indices) {
+                        Text(pressureType[$0])
+                    }
+                }.pickerStyle(SegmentedPickerStyle())
+                Text("Consider peer, family or work pressure, and other elements like cost-sharing or pressure to return the aicraft")
+            }
+            
+        }
+        .padding()
+        .tabItem {
+            Image(systemName: "waveform.path.ecg")
+            Text("Pressure \(pressurePoints, specifier: "%.00f")")
+        }
+    }
+    
 //    main view
     var totalPoints: Double {
-//        return pilotPoints + airplanePoints + envPoints + PressurePoints
-        return pilotPoints + airplanePoints + envPoints
+        return pilotPoints + airplanePoints + envPoints + pressurePoints
     }
     
     var totalColor: Color {
@@ -437,17 +522,12 @@ struct ContentView: View {
                 .padding()
                 .tabItem {
                             Image(systemName: "house")
-                            Text("Home")
+                            Text("Total \(totalPoints, specifier: "%.00f")")
                 }
             pilotTab()
             airplaneTab()
             envTab()
-            Text("Pressure")
-                .padding()
-                .tabItem {
-                            Image(systemName: "waveform.path.ecg")
-                            Text("Pressure")
-                }
+            pressureTab()
         }
     }
 }

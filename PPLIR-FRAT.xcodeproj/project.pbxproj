@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5945B3D125E5B3E500C4992D /* Sliders in Frameworks */ = {isa = PBXBuildFile; productRef = 5945B3D025E5B3E500C4992D /* Sliders */; };
 		59619E4D25E2E69300F0968B /* Tests_iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59619E4C25E2E69300F0968B /* Tests_iOS.swift */; };
 		59619E5825E2E69300F0968B /* Tests_macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59619E5725E2E69300F0968B /* Tests_macOS.swift */; };
 		59619E5A25E2E69300F0968B /* PPLIR_FRATApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59619E3125E2E69200F0968B /* PPLIR_FRATApp.swift */; };
@@ -65,6 +66,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5945B3D125E5B3E500C4992D /* Sliders in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -85,6 +87,13 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5945B3CF25E5B3E500C4992D /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		59619E2B25E2E69100F0968B = {
 			isa = PBXGroup;
 			children = (
@@ -94,6 +103,7 @@
 				59619E4B25E2E69300F0968B /* Tests iOS */,
 				59619E5625E2E69300F0968B /* Tests macOS */,
 				59619E3925E2E69200F0968B /* Products */,
+				5945B3CF25E5B3E500C4992D /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -189,6 +199,9 @@
 			dependencies = (
 			);
 			name = "PPLIR-FRAT (macOS)";
+			packageProductDependencies = (
+				5945B3D025E5B3E500C4992D /* Sliders */,
+			);
 			productName = "PPLIR-FRAT (macOS)";
 			productReference = 59619E4025E2E69200F0968B /* PPLIR-FRAT.app */;
 			productType = "com.apple.product-type.application";
@@ -479,6 +492,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1.2;
 				DEVELOPMENT_TEAM = LR23F9534M;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = iOS/Info.plist;
@@ -487,6 +501,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.nonneville.PPLIR-FRAT";
 				PRODUCT_NAME = "PPLIR-FRAT";
 				SDKROOT = iphoneos;
@@ -501,6 +516,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1.2;
 				DEVELOPMENT_TEAM = LR23F9534M;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = iOS/Info.plist;
@@ -509,6 +525,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.nonneville.PPLIR-FRAT";
 				PRODUCT_NAME = "PPLIR-FRAT";
 				SDKROOT = iphoneos;
@@ -526,6 +543,7 @@
 				CODE_SIGN_ENTITLEMENTS = macOS/macOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1.1;
 				DEVELOPMENT_TEAM = LR23F9534M;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
@@ -535,6 +553,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.nonneville.PPLIR-FRAT";
 				PRODUCT_NAME = "PPLIR-FRAT";
 				SDKROOT = macosx;
@@ -550,6 +569,7 @@
 				CODE_SIGN_ENTITLEMENTS = macOS/macOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1.1;
 				DEVELOPMENT_TEAM = LR23F9534M;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
@@ -559,6 +579,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.nonneville.PPLIR-FRAT";
 				PRODUCT_NAME = "PPLIR-FRAT";
 				SDKROOT = macosx;
@@ -717,6 +738,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		5945B3D025E5B3E500C4992D /* Sliders */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 59BB36B225E3D283000C9B02 /* XCRemoteSwiftPackageReference "SwiftUIsliders" */;
+			productName = Sliders;
+		};
 		59BB36B325E3D283000C9B02 /* Sliders */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 59BB36B225E3D283000C9B02 /* XCRemoteSwiftPackageReference "SwiftUIsliders" */;

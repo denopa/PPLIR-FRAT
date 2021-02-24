@@ -2,7 +2,7 @@
 //  Tests_macOS.swift
 //  Tests macOS
 //
-//  Created by October on 21/02/2021.
+//  Created by Patrick de Nonneville on 21/02/2021.
 //
 
 import XCTest

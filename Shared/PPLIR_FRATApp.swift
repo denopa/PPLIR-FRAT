@@ -2,7 +2,7 @@
 //  PPLIR_FRATApp.swift
 //  Shared
 //
-//  Created by October on 21/02/2021.
+//  Created by Patrick de Nonneville on 21/02/2021.
 //
 
 import SwiftUI
