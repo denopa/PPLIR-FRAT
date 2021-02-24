@@ -43,13 +43,21 @@ struct ContentView: View {
         }
     }
     
+    var pilotDisplay : Text {
+        if pilotPoints < 25 {
+            return Text("\(pilotPoints, specifier: "%.00f") point\((pilotPoints>1) ? "s":"")" ).foregroundColor(pilotColor)
+        } else {
+            return Text("NO GO").foregroundColor(Color.red)
+        }
+    }
+    
     fileprivate func pilotTab() -> some View {
         return Form {
             Section() {
                 HStack(alignment: .lastTextBaseline) {
                     Text("Pilot").font(.largeTitle)
                     Spacer()
-                    Text("\(pilotPoints, specifier: "%.00f") points").foregroundColor(pilotColor)
+                    pilotDisplay
                 }
             }
             Section(header: Text("Experience")) {
@@ -105,7 +113,7 @@ struct ContentView: View {
         .padding()
         .tabItem {
             Image(systemName: "person")
-            Text("Pilot: \(pilotPoints, specifier: "%.00f")")
+            Text(pilotPoints < 26 ? "Pilot: \(pilotPoints, specifier: "%.00f")" : "NO GO")
         }
     }
     
@@ -128,10 +136,9 @@ struct ContentView: View {
    
     var airplanePoints: Double {
         var points : Double = 0
-        points = points + (ME ? -2:0) + (turbine ? -2:0) + (inop ? 3:0) + (avionics ? 3:0)
+        points = points + (ME ? -2:0) + (turbine ? -2:0) + (inop ? 3:0) + (avionics && ((enrouteWeather>1) || (airportWeather>1)) ? 15:0) + (avionics ? 1:0)
         if (enrouteWeather>1) || (airportWeather>1) {
             points = points + (!ap ? 7:0) + (maintenance ? 5:0) + (!GNSS ? 4:0)
-            
         } else {
             points = points +  (!GNSS ? 2:0)
         }
@@ -155,24 +162,38 @@ struct ContentView: View {
         }
     }
     
+    var airplaneDisplay : Text {
+        if airplanePoints < 25 {
+            return Text("\(airplanePoints, specifier: "%.00f") point\((airplanePoints>1) ? "s":"")").foregroundColor(airplaneColor)
+        } else {
+            return Text("NO GO").foregroundColor(Color.red)
+        }
+    }
+    
     fileprivate func airplaneTab() -> some View {
         return Form {
             Section() {
                 HStack(alignment: .lastTextBaseline) {
                     Text("Airplane").font(.largeTitle)
                     Spacer()
-                    Text("\(airplanePoints, specifier: "%.00f") points").foregroundColor(airplaneColor)
+                    airplaneDisplay
                 }
             }
             Section(header: Text("Status")) {
                 Toggle(isOn: $inop) {
                     Text("Any inop systems (but not making the flight illegal)")
                 }
-                Toggle(isOn: $avionics) {
+                Toggle(isOn: $avionics.animation()) {
                     Text("Avionics: <10h with new/unfamiliar (to plane or pilot)")
+                }
+                if avionics && ((enrouteWeather>1) || (airportWeather>1)) {
+                    Text("Caution: IMC with unfamiliar avionics").foregroundColor(.orange)
                 }
                 Toggle(isOn: $maintenance.animation()) {
                     Text("First flight after maintenance")
+                }
+                if maintenance && ((enrouteWeather>1) || (airportWeather>1)) {
+                    Text("Caution: recently maintained aircraft in IMC").foregroundColor(.orange)
                 }
                 if !maintenance {
                     Toggle(isOn: $nonUse) {
@@ -190,20 +211,17 @@ struct ContentView: View {
                 Toggle(isOn: $GNSS) {
                     Text("GNSS")
                 }
-                Toggle(isOn: $FIKI) {
+                Toggle(isOn: $FIKI.animation()) {
                     Text("FIKI")
+                }
+                if !FIKI && (icing>1) {
+                    Text("NO GO : icing in non deiced aircraft").foregroundColor(.red)
                 }
                 Toggle(isOn: $ME) {
                     Text("Multi Engine")
                 }
                 Toggle(isOn: $turbine) {
                     Text("Turbine")
-                }
-                Toggle(isOn: $dlWeather) {
-                    Text("Downlink Weather")
-                }
-                Toggle(isOn: $radar) {
-                    Text("Onboard Radar")
                 }
                 Toggle(isOn: $alternator) {
                     Text("Backup Alternator")
@@ -215,11 +233,19 @@ struct ContentView: View {
                     Text("Dual vaccum system")
                 }
             }
+            Section(header: Text("Weather")) {
+                Toggle(isOn: $dlWeather) {
+                    Text("Downlink Weather")
+                }
+                Toggle(isOn: $radar) {
+                    Text("Onboard Radar")
+                }
+            }
         }
         .padding()
         .tabItem {
             Image(systemName: "paperplane")
-            Text("Airplane \(airplanePoints, specifier: "%.00f")")
+            Text(airplanePoints < 26 ? "Airplane: \(airplanePoints, specifier: "%.00f")" : "NO GO")
         }
     }
     
@@ -230,6 +256,7 @@ struct ContentView: View {
     @AppStorage("terrain") var terrain : Bool = false
     @AppStorage("icing") var icing : Int = 0
     let icings : [String] = ["No Icing","Light", "Moderate","Severe"]
+    @AppStorage("icingMSA") var icingMSA = false
     @AppStorage("storms") var storms : Bool = false
     @AppStorage("embeddedCB") var embeddedCB : Bool = false
     @AppStorage("turbulence") var turbulence : Bool = false
@@ -265,9 +292,9 @@ struct ContentView: View {
         if icing == 3 {
             points = points + 100
         } else if icing == 2 {
-            points = points + (FIKI ? 5:15)
+            points = points + (FIKI ? 3:100) + (icingMSA ? 100:0)
         } else if icing == 1 {
-            points = points + (FIKI ? 0:3)
+            points = points + (FIKI ? 0:3) + (!FIKI && icingMSA ? 100:0)
         }
         if storms {
             points = points + 15 + (dlWeather ? -4:0) + (radar ? -4:0)
@@ -316,6 +343,14 @@ struct ContentView: View {
             return Color.red
         }
     }
+    
+    var envDisplay : Text {
+        if envPoints < 25 {
+            return Text("\(envPoints, specifier: "%.00f") point\((envPoints>1) ? "s":"")").foregroundColor(envColor)
+        } else {
+            return Text("NO GO").foregroundColor(Color.red)
+        }
+    }
         
     fileprivate func envTab() -> some View {
         return Form {
@@ -323,7 +358,7 @@ struct ContentView: View {
                 HStack(alignment: .lastTextBaseline) {
                     Text("Environment").font(.largeTitle)
                     Spacer()
-                    Text("\(envPoints, specifier: "%.00f") points").foregroundColor(envColor)
+                    envDisplay
                 }
             }
             Section(header: Text("Enroute conditions")) {
@@ -344,17 +379,32 @@ struct ContentView: View {
                 Toggle(isOn: $storms) {
                     Text("TS, Heavy Rain more than ISOL/OCNL? ")
                 }
-                Toggle(isOn: $embeddedCB) {
+                Toggle(isOn: $embeddedCB.animation()) {
                     Text("Embedded CBs? ")
+                }
+                if !dlWeather && !radar && embeddedCB && (enrouteWeather>1){
+                    Text("NO GO : CBs in IMC without radar").foregroundColor(.red)
                 }
                 Toggle(isOn: $turbulence) {
                     Text("Turbulence SIGMET? ")
                 }
-                Picker(selection: $icing, label:Text("Icing")) {
+                Picker(selection: $icing.animation(), label:Text("Icing")) {
                     ForEach(0..<icings.count) {
                         Text(self.icings[$0])
                     }
                 }.pickerStyle(SegmentedPickerStyle())
+                if icing>2 {
+                    Text("NO GO : severe icing").foregroundColor(.red)
+                }
+                if icing == 2 {
+                    if FIKI {
+                        Toggle(isOn: $icingMSA) {
+                            Text("Freezing below MSA? ").foregroundColor(icingMSA ? .red:.none)
+                        }
+                    } else {
+                        Text("NO GO : non-deiced aircraft in icing").foregroundColor(.red)
+                    }
+                }
             }
             Section(header: Text("Alternate and Fuel")) {
                 Toggle(isOn: $alternateBrief) {
@@ -368,16 +418,22 @@ struct ContentView: View {
                 }
             }
             Section(header: Text("Airport Forecast - worst of Departure, Arrival, Alternate")) {
-                Picker("Weather Conditions", selection: $airportWeather) {
+                Picker("Weather Conditions", selection: $airportWeather.animation()) {
                     ForEach(0..<weather.count) {
                         Text(self.weather[$0])
                     }
                 }.pickerStyle(SegmentedPickerStyle())
-                Picker("Approach", selection: $approach) {
+                Picker("Approach", selection: $approach.animation()) {
                     ForEach(0..<approachTypes.count) {
                         Text(self.approachTypes[$0])
                     }
                 }.pickerStyle(SegmentedPickerStyle())
+                if (airportWeather==3 && approach==1) {
+                    Text("Caution: Circling in low IMC").foregroundColor(.orange)
+                }
+                if (airportWeather>2 && approach==0) {
+                    Text("NO GO: IMC into non instrument airport").foregroundColor(.red)
+                }
                 Toggle(isOn: $wind) {
                     Text("Surface winds > 1/3 Approach Speed ?")
                 }
@@ -411,7 +467,7 @@ struct ContentView: View {
         .padding()
         .tabItem {
             Image(systemName: "cloud.bolt")
-            Text("Environment \(envPoints, specifier: "%.00f")")
+            Text(envPoints < 26 ? "Environment: \(envPoints, specifier: "%.00f")" : "NO GO")
         }
     }
     
@@ -446,7 +502,7 @@ struct ContentView: View {
     }
     
     var pressureColor: Color {
-        if pressurePoints < 15 {
+        if pressurePoints < 10 {
             return Color.green
         }
         else if pressurePoints < 25 {
@@ -457,6 +513,13 @@ struct ContentView: View {
         }
     }
     
+    var pressureDisplay : Text {
+        if pressurePoints < 25 {
+            return Text("\(pressurePoints, specifier: "%.00f") point\((pressurePoints>1) ? "s":"")").foregroundColor(pressureColor)
+        } else {
+            return Text("NO GO").foregroundColor(Color.red)
+        }
+    }
     
     fileprivate func pressureTab() -> some View {
         return Form {
@@ -464,37 +527,47 @@ struct ContentView: View {
                 HStack(alignment: .lastTextBaseline) {
                     Text("Pressure").font(.largeTitle)
                     Spacer()
-                    Text("\(pressurePoints, specifier: "%.00f") points").foregroundColor(pressureColor)
+                    pressureDisplay
                 }
             }
             Section(header: Text("Passengers")) {
-                Picker("Passengers", selection: $passengers) {
+                Picker("Passengers", selection: $passengers.animation()) {
                     ForEach(passengersType.indices) {
                         Text(passengersType[$0])
                     }
                 }.pickerStyle(SegmentedPickerStyle())
+                if passengers == 1 {
+                    Text("Passenger briefings can help reduce both pax and pilot pressure").foregroundColor(.gray)
+                }
             }
             Section(header: Text("IMSAFE")) {
-                Picker("IMSAFE", selection: $IMSAFE) {
+                Picker("IMSAFE", selection: $IMSAFE.animation()) {
                     ForEach(fitForFlight.indices) {
                         Text(fitForFlight[$0])
                     }
                 }.pickerStyle(SegmentedPickerStyle())
+                if IMSAFE == 2 {
+                    Text("NO GO: not fit to fly").foregroundColor(.red)
+                }
             }
             Section(header: Text("Pressure to complete flight")) {
-                Picker("pressureToComplete", selection: $pressureToComplete) {
+                Picker("pressureToComplete", selection: $pressureToComplete.animation()) {
                     ForEach(pressureType.indices) {
                         Text(pressureType[$0])
                     }
                 }.pickerStyle(SegmentedPickerStyle())
-                Text("Consider peer, family or work pressure, and other elements like cost-sharing or pressure to return the aicraft")
+                if pressureToComplete < 3 {
+                    Text("Consider peer, family or work pressure, and other elements like cost-sharing or pressure to return the aicraft").foregroundColor(.gray)
+                } else {
+                    Text("NO GO: you are not free to make a safe decision").foregroundColor(.red)
+                }
             }
             
         }
         .padding()
         .tabItem {
             Image(systemName: "waveform.path.ecg")
-            Text("Pressure \(pressurePoints, specifier: "%.00f")")
+            Text(pressurePoints < 26 ? "Pressure \(pressurePoints, specifier: "%.00f")" : "NO GO")
         }
     }
     
@@ -515,20 +588,31 @@ struct ContentView: View {
         }
     }
     
-    var body: some View {
-        
-        TabView {
-            Text("\(totalPoints, specifier: "%.00f")").foregroundColor(pilotColor).font(.largeTitle)
-                .padding()
-                .tabItem {
-                            Image(systemName: "house")
-                            Text("Total \(totalPoints, specifier: "%.00f")")
-                }
-            pilotTab()
-            airplaneTab()
-            envTab()
-            pressureTab()
+    var totalDisplay : Text {
+        if totalPoints < 25 {
+            return Text("Total: \(totalPoints, specifier: "%.00f") point\((totalPoints>1) ? "s":"")").foregroundColor(totalColor)
+        } else {
+            return Text("NO GO").foregroundColor(Color.red)
         }
+    }
+    var body: some View {
+        VStack {
+            TabView {
+                pilotTab()
+                airplaneTab()
+                envTab()
+                pressureTab()
+            }
+//            Divider()
+            HStack {
+                Image("32")
+                Link("PPL/IR Europe", destination: URL(string: "https://pplir.org")!)
+                Spacer()
+                totalDisplay
+            }
+            .padding()
+        }
+        
     }
 }
 
