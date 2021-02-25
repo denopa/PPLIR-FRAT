@@ -582,11 +582,14 @@ struct ContentView: View {
         .padding()
         .tabItem {
             Image(systemName: "waveform.path.ecg")
-            Text(pressurePoints < 26 ? "Pressure \(pressurePoints, specifier: "%.00f")" : "NO GO")
+            Text(pressurePoints < 26 ? "Pressure: \(pressurePoints, specifier: "%.00f")" : "NO GO")
         }
     }
     
 //    main view
+    
+    let whichTab = ["Pilot", "Airplane", "Environment", "Pressure"]
+    
     var totalPoints: Double {
         return pilotPoints + airplanePoints + envPoints + pressurePoints
     }
@@ -612,13 +615,6 @@ struct ContentView: View {
     }
     var body: some View {
         VStack {
-            TabView {
-                pilotTab()
-                airplaneTab()
-                envTab()
-                pressureTab()
-            }
-//            Divider()
             HStack {
                 Image("32")
                 Link("PPL/IR Europe", destination: URL(string: "https://pplir.org")!)
@@ -626,6 +622,12 @@ struct ContentView: View {
                 totalDisplay
             }
             .padding()
+            TabView {
+                pilotTab()
+                airplaneTab()
+                envTab()
+                pressureTab()
+            }
         }
         
     }
