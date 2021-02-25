@@ -224,7 +224,7 @@ struct ContentView: View {
                     Text("Turbine")
                 }
                 Toggle(isOn: $alternator) {
-                    Text("Two Alternators")
+                    Text("Dual Alternators")
                 }
                 Toggle(isOn: $AI) {
                     Text("Backup Attitude Indicator")

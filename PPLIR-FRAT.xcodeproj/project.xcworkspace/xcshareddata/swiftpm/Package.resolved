@@ -1,0 +1,16 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "Sliders",
+        "repositoryURL": "https://github.com/denopa/SwiftUIsliders.git",
+        "state": {
+          "branch": "master",
+          "revision": "03d3b5afa5923cadd462da7ff99c091ae688dd03",
+          "version": null
+        }
+      }
+    ]
+  },
+  "version": 1
+}
