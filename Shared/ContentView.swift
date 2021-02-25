@@ -17,7 +17,7 @@ struct ContentView: View {
     @AppStorage("monthsSinceTraining") var monthsSinceTraining: Double = 12
     @AppStorage("IRRatedCopilot") var IRRatedCopilot: Bool = false
     @AppStorage("license") var license: Int = 0
-    let licenses = ["PPL","Instructor","CPL","ATPL"]
+    let licences = ["PPL","Instructor","CPL","ATPL"]
     let licensePoints : [Double] = [0,-1,-1,-4]
     @AppStorage("rating") var rating = 0
     let ratings = ["No IR", "IMCr", "IR"]
@@ -28,7 +28,7 @@ struct ContentView: View {
         let recent = max(0,(6-recentHoursInType/5)).rounded(.up)
         let training = min(6,(monthsSinceTraining/1.5)).rounded(.up) - 1
         let copilot : Double = IRRatedCopilot ? -5 : 0
-        return inType + recent + training + copilot + licensePoints[license] + (licenses[license]=="ATPL" ? 0 : ratingPoints[rating])
+        return inType + recent + training + copilot + licensePoints[license] + (licences[license]=="ATPL" ? 0 : ratingPoints[rating])
     }
     
     var pilotColor: Color {
@@ -95,10 +95,10 @@ struct ContentView: View {
                     Text("Instructor or IR pilot in P2 seat? ")
                 }
             }
-            Section(header: Text("Licenses, Current and Proficient Ratings")) {
+            Section(header: Text("licences, Current and Proficient Ratings")) {
                 Picker(selection: $license, label:Text("License")) {
-                    ForEach(0..<licenses.count) {
-                        Text(self.licenses[$0])
+                    ForEach(0..<licences.count) {
+                        Text(self.licences[$0])
                     }
                 }
                 .pickerStyle(SegmentedPickerStyle())
@@ -125,7 +125,7 @@ struct ContentView: View {
     @AppStorage("radar") var radar : Bool = false
     @AppStorage("alternator") var alternator : Bool = false
     @AppStorage("AI") var AI : Bool = false
-    @AppStorage("vaccum") var vaccum : Bool = false
+    @AppStorage("vacuum") var vacuum : Bool = false
     @AppStorage("GNSS") var GNSS : Bool = false
     @AppStorage("ap") var ap : Bool = false
     @AppStorage("inop") var inop : Bool = false
@@ -224,13 +224,13 @@ struct ContentView: View {
                     Text("Turbine")
                 }
                 Toggle(isOn: $alternator) {
-                    Text("Backup Alternator")
+                    Text("Two Alternators")
                 }
                 Toggle(isOn: $AI) {
                     Text("Backup Attitude Indicator")
                 }
-                Toggle(isOn: $vaccum) {
-                    Text("Dual vaccum system")
+                Toggle(isOn: $vacuum) {
+                    Text("Dual vacuum system")
                 }
             }
             Section(header: Text("Weather")) {
@@ -280,11 +280,11 @@ struct ContentView: View {
         var points : Double = 0
         //        enroute
         if enrouteWeather > 1 {
-            points = 6 - (dlWeather ? 1:0) - (radar ? 1:0) - (alternator ? 1:0) - (AI ? 1:0) - (vaccum ? 1:0)
+            points = 6 - (dlWeather ? 1:0) - (radar ? 1:0) - (alternator ? 1:0) - (AI ? 1:0) - (vacuum ? 1:0)
             points = points + ((rating<1) ? 100:0) //no go if no IR rating
         }
         if night {
-            points = points + 5 - ((ME||turbine) ? 2:0) - ((!(ME||turbine)&&(alternator&&vaccum)) ? 1:0)
+            points = points + 5 - ((ME||turbine) ? 2:0) - ((!(ME||turbine)&&(alternator&&vacuum)) ? 1:0)
         }
         if terrain && !(ME||turbine) {
             points = points + 3
