@@ -22,7 +22,7 @@ struct ContentView: View {
     @AppStorage("rating") var rating = 0
     let ratings = ["No IR", "IMCr", "IR"]
     let ratingPoints : [Double] = [0, -1, -2]
-    
+
     var pilotPoints: Double {
         let inType = max(0,(5-hoursInType/100)).rounded(.up)
         let recent = max(0,(6-recentHoursInType/5)).rounded(.up)
@@ -30,7 +30,7 @@ struct ContentView: View {
         let copilot : Double = IRRatedCopilot ? -5 : 0
         return inType + recent + training + copilot + licensePoints[license] + (licences[license]=="ATPL" ? 0 : ratingPoints[rating])
     }
-    
+
     var pilotColor: Color {
         if pilotPoints < 15 {
             return Color.green
@@ -42,7 +42,7 @@ struct ContentView: View {
             return Color.red
         }
     }
-    
+
     var pilotDisplay : Text {
         if pilotPoints < 25 {
             return Text("\(pilotPoints, specifier: "%.00f") point\((pilotPoints>1) ? "s":"")" ).foregroundColor(pilotColor)
@@ -50,7 +50,7 @@ struct ContentView: View {
             return Text("NO GO").foregroundColor(Color.red)
         }
     }
-    
+
     fileprivate func pilotTab() -> some View {
         return Form {
             Section() {
@@ -116,7 +116,6 @@ struct ContentView: View {
             Text(pilotPoints < 26 ? "Pilot: \(pilotPoints, specifier: "%.00f")" : "NO GO")
         }
     }
-    
 //    Airplane tab
     @AppStorage("FIKI") var FIKI : Bool = false
     @AppStorage("ME") var ME : Bool = false
@@ -618,11 +617,14 @@ struct ContentView: View {
             VStack {
                 HStack {
                     Image("32")
-                    Link("PPL/IR Europe", destination: URL(string: "https://pplir.org")!)
+                    Link("PPL/IR Europe", destination: URL(string: "https://pplir.org")!).font(Font.headline)
                     Spacer()
-                    totalDisplay
+                    totalDisplay.font(Font.headline)
                 }
                 .padding()
+                HStack {
+                    Link("Flight Risk Assesment", destination: URL(string: "https://www.faa.gov/news/safety_briefing/2016/media/SE_Topic_16-12.pdf")!).font(Font.headline)
+                }
             }
             TabView {
                 pilotTab()
