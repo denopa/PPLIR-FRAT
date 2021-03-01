@@ -615,13 +615,15 @@ struct ContentView: View {
     }
     var body: some View {
         VStack {
-            HStack {
-                Image("32")
-                Link("PPL/IR Europe", destination: URL(string: "https://pplir.org")!)
-                Spacer()
-                totalDisplay
+            VStack {
+                HStack {
+                    Image("32")
+                    Link("PPL/IR Europe", destination: URL(string: "https://pplir.org")!)
+                    Spacer()
+                    totalDisplay
+                }
+                .padding()
             }
-            .padding()
             TabView {
                 pilotTab()
                 airplaneTab()

@@ -11,7 +11,7 @@ import SwiftUI
 struct PPLIR_FRATApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            SplashView()
         }
     }
 }

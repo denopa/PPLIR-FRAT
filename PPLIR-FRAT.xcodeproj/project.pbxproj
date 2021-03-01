@@ -17,6 +17,10 @@
 		59619E5E25E2E69300F0968B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 59619E3325E2E69200F0968B /* Assets.xcassets */; };
 		59619E5F25E2E69300F0968B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 59619E3325E2E69200F0968B /* Assets.xcassets */; };
 		59BB36B425E3D283000C9B02 /* Sliders in Frameworks */ = {isa = PBXBuildFile; productRef = 59BB36B325E3D283000C9B02 /* Sliders */; };
+		CDE93B1125ED454A00BF55D4 /* Splash.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDE93B1025ED454A00BF55D4 /* Splash.swift */; };
+		CDE93B1225ED454A00BF55D4 /* Splash.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDE93B1025ED454A00BF55D4 /* Splash.swift */; };
+		CDFA315425ED614900E8C38B /* Disclaimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFA315325ED614900E8C38B /* Disclaimer.swift */; };
+		CDFA315525ED614900E8C38B /* Disclaimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFA315325ED614900E8C38B /* Disclaimer.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +55,8 @@
 		59619E5325E2E69300F0968B /* Tests macOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tests macOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		59619E5725E2E69300F0968B /* Tests_macOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOS.swift; sourceTree = "<group>"; };
 		59619E5925E2E69300F0968B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CDE93B1025ED454A00BF55D4 /* Splash.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Splash.swift; sourceTree = "<group>"; };
+		CDFA315325ED614900E8C38B /* Disclaimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Disclaimer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -111,6 +117,8 @@
 			isa = PBXGroup;
 			children = (
 				59619E3125E2E69200F0968B /* PPLIR_FRATApp.swift */,
+				CDE93B1025ED454A00BF55D4 /* Splash.swift */,
+				CDFA315325ED614900E8C38B /* Disclaimer.swift */,
 				59619E3225E2E69200F0968B /* ContentView.swift */,
 				59619E3325E2E69200F0968B /* Assets.xcassets */,
 			);
@@ -329,7 +337,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CDFA315425ED614900E8C38B /* Disclaimer.swift in Sources */,
 				59619E5C25E2E69300F0968B /* ContentView.swift in Sources */,
+				CDE93B1125ED454A00BF55D4 /* Splash.swift in Sources */,
 				59619E5A25E2E69300F0968B /* PPLIR_FRATApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -338,7 +348,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CDFA315525ED614900E8C38B /* Disclaimer.swift in Sources */,
 				59619E5D25E2E69300F0968B /* ContentView.swift in Sources */,
+				CDE93B1225ED454A00BF55D4 /* Splash.swift in Sources */,
 				59619E5B25E2E69300F0968B /* PPLIR_FRATApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
