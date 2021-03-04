@@ -299,7 +299,7 @@ struct ContentView: View {
             points = points + 15 + (dlWeather ? -4:0) + (radar ? -4:0)
         } else if turbulence {
             points = points + 7
-        } else if embeddedCB {
+        } else if embeddedCB && (enrouteWeather > 1) {
             points = points + 7
         }
         if embeddedCB && (enrouteWeather > 1) && !dlWeather && !radar {
@@ -369,7 +369,7 @@ struct ContentView: View {
                 }
             }
             Section(header: Text("Enroute forecast")) {
-                Picker("Weather Conditions", selection: $enrouteWeather) {
+                Picker("Weather Conditions", selection: $enrouteWeather.animation()) {
                     ForEach(0..<weather.count) {
                         Text(self.weather[$0])
                     }
@@ -378,38 +378,42 @@ struct ContentView: View {
                 Toggle(isOn: $storms) {
                     Text("TS, Heavy Rain more than ISOL/OCNL? ")
                 }
-                Toggle(isOn: $embeddedCB.animation()) {
-                    Text("Embedded CBs? ")
-                }
-                if !dlWeather && !radar && embeddedCB && (enrouteWeather>1){
-                    Text("NO GO : CBs in IMC without radar").foregroundColor(.red)
-                }
                 Toggle(isOn: $turbulence) {
                     Text("Turbulence SIGMET? ")
                 }
-            }
-            Section(header: Text("Icing forecast: \(icings[Int(icing)])")) {
-                HSlider(value: $icing, in: 0...3, step: 1, track:
-                            LinearGradient(gradient: Gradient(colors: [.green, .orange, .red]), startPoint: .leading, endPoint: .trailing)
-                            .frame(height: 3)
-                            .cornerRadius(4)
-                )
-                if icing>2 {
-                    Text("NO GO : severe icing").foregroundColor(.red)
-                }
-                if icing == 2 {
-                    if FIKI {
-                        Toggle(isOn: $icingMSA) {
-                            Text("Freezing below MSA? ").foregroundColor(icingMSA ? .red:.none)
-                        }
-                    } else {
-                        Text("NO GO : non-deiced aircraft in icing").foregroundColor(.red)
+                if enrouteWeather>1 {
+                    Toggle(isOn: $embeddedCB.animation()) {
+                        Text("Embedded CBs? ")
+                    }
+                    if !dlWeather && !radar && embeddedCB && (enrouteWeather>1){
+                        Text("NO GO : CBs in IMC without radar").foregroundColor(.red)
                     }
                 }
-                if icing == 1 {
-                    if !FIKI {
-                        Toggle(isOn: $icingMSA) {
-                            Text("Freezing below MSA? ").foregroundColor(icingMSA ? .red:.none)
+            }
+            if enrouteWeather>1 {
+                Section(header: Text("Icing forecast: \(icings[Int(icing)])")) {
+                    HSlider(value: $icing, in: 0...3, step: 1, track:
+                                LinearGradient(gradient: Gradient(colors: [.green, .orange, .red]), startPoint: .leading, endPoint: .trailing)
+                                .frame(height: 3)
+                                .cornerRadius(4)
+                    )
+                    if icing>2 {
+                        Text("NO GO : severe icing").foregroundColor(.red)
+                    }
+                    if icing == 2 {
+                        if FIKI {
+                            Toggle(isOn: $icingMSA) {
+                                Text("Freezing below MSA? ").foregroundColor(icingMSA ? .red:.none)
+                            }
+                        } else {
+                            Text("NO GO : non-deiced aircraft in icing").foregroundColor(.red)
+                        }
+                    }
+                    if icing == 1 {
+                        if !FIKI {
+                            Toggle(isOn: $icingMSA) {
+                                Text("Freezing below MSA? ").foregroundColor(icingMSA ? .red:.none)
+                            }
                         }
                     }
                 }
