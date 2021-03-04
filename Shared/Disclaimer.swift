@@ -26,7 +26,7 @@ struct DisclaimerView : View {
                 VStack {
                     Text("This application is provided to you as a training tool to help you consider some of the risks inherent in General Aviation flying. It doesn't in any way, shape or form relieve you of any responsibility linked to the planning and conduct of a potential flight.").font(Font.footnote)
                     Text("")
-                    Text("In no event shall PPL/IR Europe, its officers and members, or the conceptors and developpers of this application, be liable for any damage whatsoever, including special, indirect, consecquential or incidental damages, including lost profit, arising out of or connected with any of the material or the use, reliance upon or performance of any material contained in this tool.").font(Font.footnote)
+                    Text("In no event shall PPL/IR Europe, its officers and members, or the creators and developers of this application, be liable for any damage whatsoever, including special, indirect, consequential or incidental damages, including lost profit, arising out of or connected with any of the material or the use, reliance upon or performance of any material contained in this tool.").font(Font.footnote)
                     Text("")
                     Text("There is no warranty, representation, or condition of any kind; and any warranty, express or implied is excluded and disclaimed, including the warranty of fitness for a particular purpose.").font(Font.footnote)
                     Text("")
