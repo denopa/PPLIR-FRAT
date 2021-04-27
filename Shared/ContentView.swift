@@ -290,9 +290,9 @@ struct ContentView: View {
         }
         if icing == 3 {
             points = points + 100
-        } else if icing == 2 {
+        } else if (icing == 2) && (enrouteWeather>2) {
             points = points + (FIKI ? 3:100) + (icingMSA ? 100:0)
-        } else if icing == 1 {
+        } else if (icing == 1) && (enrouteWeather>2){
             points = points + (FIKI ? 0:3) + (!FIKI && icingMSA ? 100:0)
         }
         if storms {
@@ -455,11 +455,13 @@ struct ContentView: View {
 //                    }
 //                }.pickerStyle(SegmentedPickerStyle())
                 Text("Crosswind: \(crosswindTypes[Int(crosswind)])")
-                HSlider(value: $crosswind, in: 0...2, step: 1, track:
-                            LinearGradient(gradient: Gradient(colors: [.green, .orange, .red]), startPoint: .leading, endPoint: .trailing)
-                            .frame(height: 3)
-                            .cornerRadius(4)
-                )
+                HStack {
+                    HSlider(value: $crosswind, in: 0...2, step: 1, track:
+                                LinearGradient(gradient: Gradient(colors: [.green, .orange, .red]), startPoint: .leading, endPoint: .trailing)
+                                .frame(height: 3)
+                                .cornerRadius(4)
+                    )
+                }
                 Toggle(isOn: $winter) {
                     Text("Winter Ops Snow, Ice, Contaminated runway?")
                 }
